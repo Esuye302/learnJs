@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="form.js" defer></script>
+    <style>
+        body {
+            font-family: serif;
+        }
+
+        .active {
+            color: green;
+        }
+
+        .inactive {
+            color: red;
+        }
+
+        .error {
+            color: red;
+            font-size: 12px;
+        }
+
+        #del-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 6px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #edit-btn {
+            background-color: blue;
+            margin-left: 3px;
+            color: white;
+            border: none;
+            padding: 6px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <form id="myForm">
+        <input id="name" type="text" required placeholder="Enter Your Name"><br>
+        <div class="error" id="name-error"></div>
+        <input id="email" type="email" required placeholder="Enter Your email"><br>
+        <div class="error" id="email-error"></div>
+
+        <input type="password" required id="password" placeholder="password"><br>
+        <div class="error" id="password-error"></div>
+
+        <button type="submit" id="submit-btn">Submit</button><br>
+
+    </form>
+    <div class="user-list">
+
+    </div>
+</body>
+
+</html>
