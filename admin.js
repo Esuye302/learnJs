@@ -8,23 +8,28 @@ const searchInput = document.getElementById('search-input')
 const searchBtn = document.getElementById('search-btn')
 
 let editingId = null
-let id = 1
-
+let searchTerm = null
 let userList = JSON.parse(localStorage.getItem('userList')) ?? []
 
 function renderUserList() {
-    showUserList.innerHTML = userList.map(user =>
+    let userToRender = userList
+    if (searchTerm) {
+        userToRender = userToRender.filter(u => u.name === searchTerm)
+    }
+    showUserList.innerHTML = userToRender.map(user =>
         `
                 <tr>
                     <td>${user.name}</td>
                     <td>${user.email}</td>
                     <td>${user.role}</td>
                     <td class="${user.isActive ? 'active' : 'inactive'}">${user.isActive ? 'Active' : 'inactive'}</td>
-                 
-                </tr>
+                 <td>
                  <button class="del-btn" data-userid="${user.id}">Del</button>
                 <button class="edit-btn" data-userid="${user.id}">Edit</button>
-                <button class="toggle" data-userid="${user.id}">${user.isActive ? 'inactive' : 'Active'}</button>
+                <button class="toggle primary" data-userid="${user.id}">${user.isActive ? 'inactive' : 'Active'}</button> 
+                 </td>
+                </tr>
+                
 
     
     `
@@ -32,25 +37,23 @@ function renderUserList() {
 }
 renderUserList()
 searchBtn.addEventListener("click", (e) => {
-    let searchName = searchInput.value.trim()
-  let searchedUser = [] 
-  searchedUser.push( userList.find(u=>u.name===searchName))
-  userList = searchedUser
-  searchInput.value = ''
-  renderUserList()
+    searchTerm = searchInput.value.trim()
+    renderUserList()
+
+    searchInput.value = ''
 })
 addUserBtn.addEventListener('click', addUser)
 showUserList.addEventListener('click', (e) => {
-    let userId = Number(e.target.dataset.userid);
+    let userId = e.target.dataset.userid
 
-    if (e.target.className === 'edit-btn') {
+    if (e.target.classList.contains('edit-btn')) {
         editUser(userId)
     }
 
-    if (e.target.className === 'del-btn') {
+    if (e.target.classList.contains('del-btn')) {
         removeUser(userId)
     }
-    if (e.target.className === 'toggle') {
+    if (e.target.classList.contains('toggle')) {
         //we use this function to active user or inactive
         toggleUser(userId)
     }
@@ -90,7 +93,9 @@ function removeUser(userid) {
 
 }
 function addUser() {
-    if (!userName || !email, !role) return
+    if (!userName.value || !email.value, !role.value) return
+
+    const id = crypto.randomUUID()
 
     if (editingId) {
         userList = userList.map(u => {
@@ -109,7 +114,7 @@ function addUser() {
             email: email.value,
             role: role.value,
             isActive: true,
-            id: id++
+            id
         })
     }
 
@@ -120,4 +125,3 @@ function addUser() {
     email.value = ''
     role.value = 'employee'
 }
-
