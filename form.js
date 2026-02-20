@@ -15,24 +15,19 @@ form.addEventListener('submit', (e) => {
     handleUser()
 
 })
-let checkbox = false
+
+//it checks on the localstorage if none it assign []
 let users = JSON.parse(localStorage.getItem('users')) ?? []
 function render() {
     displayUserList.innerHTML = users.map(u => `
         <p class="${u.isActive ? "active" : "inactive"}"> ${u.name} : ${u.email} : ${u.password}|
-          <input type="checkbox" id='mycheckBox'> 
+          <input type="checkbox" data-userid="${u.id}" ${u.isActive ? "checked" : ""}> 
           <button id='del-btn' data-userid="${u.id}">Del</button>
           <button id='edit-btn' data-userid="${u.id}">Edit</button>  </p>  
     `).join('')
 
 
-    const box = document.getElementById('mycheckBox')
-    box.addEventListener('change', (e) => {
-        checkbox = e.target.checked
-        let userId = Number(e.target.dataset.userid)
-        toggleUser(userId)
 
-    })
 
 
 }
@@ -41,7 +36,12 @@ function saveUsers() {
     localStorage.setItem('users', JSON.stringify(users))
 
 }
+
+// we use in here eventdeligation or event bubbling the event goes up from specfic to the documnet  
+// for instance  <ul><li><button>click</button></li></ul>  when we click the btn it goes up from button->li->ul->til it get to the documnet
+
 displayUserList.addEventListener('click', (event) => {
+
     let userId = Number(event.target.dataset.userid)
     let btnId = event.target.id.trim()
     if (btnId === 'del-btn') {
@@ -50,9 +50,16 @@ displayUserList.addEventListener('click', (event) => {
     if (btnId === 'edit-btn') {
         editUser(userId)
     }
+    if (event.target.type === 'checkbox') {
+        toggleUser(userId)
+    }
 
 
 })
+
+
+
+
 let editingId = null
 function editUser(userid) {
     const user = users.find(u => u.id === userid)
@@ -75,13 +82,8 @@ function toggleUser(userId) {
 
     users = users.map(u => {
         if (u.id === userId) {
-            if (checkboxStatus) {
-                return { ...u, isActive: true }
-            } else {
+            return { ...u, isActive:!u.isActive }
 
-                return { ...u, isActive: false }
-
-            }
         }
         return u
     })
